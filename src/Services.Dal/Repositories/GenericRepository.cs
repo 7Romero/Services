@@ -3,15 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Services.Common.Exceptions;
 using Services.Dal.Interfaces;
 using Services.Domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Services.Dal.Repositories;
-
 public class GenericRepository : IGenericRepository
 {
     private readonly AppDbContext _appDbContext;
@@ -23,12 +17,12 @@ public class GenericRepository : IGenericRepository
         _mapper = mapper;
     }
 
-    public void Add<TEntity>(TEntity entity) where TEntity : class,IBaseEntity
+    public void Add<TEntity>(TEntity entity) where TEntity : class, IBaseEntity
     {
         _appDbContext.Set<TEntity>().Add(entity);
     }
 
-    public async Task<TEntity> Delete<TEntity>(Guid id) where TEntity : class,IBaseEntity
+    public async Task<TEntity> Delete<TEntity>(Guid id) where TEntity : class, IBaseEntity
     {
         var entity = await _appDbContext.Set<TEntity>().FindAsync(id);
         if (entity == null)
@@ -41,17 +35,17 @@ public class GenericRepository : IGenericRepository
         return entity;
     }
 
-    public async Task<List<TEntity>> GetAll<TEntity>() where TEntity : class,IBaseEntity
+    public async Task<List<TEntity>> GetAll<TEntity>() where TEntity : class, IBaseEntity
     {
         return await _appDbContext.Set<TEntity>().ToListAsync();
     }
 
-    public async Task<TEntity> GetById<TEntity>(Guid id) where TEntity : class,IBaseEntity
+    public async Task<TEntity> GetById<TEntity>(Guid id) where TEntity : class, IBaseEntity
     {
         return await _appDbContext.Set<TEntity>().FirstOrDefaultAsync(x => x.Id == id);
     }
 
-    public async Task<TEntity> GetByIdWithInclude<TEntity>(Guid id, params Expression<Func<TEntity, object>>[] includeProperties) where TEntity : class,IBaseEntity
+    public async Task<TEntity> GetByIdWithInclude<TEntity>(Guid id, params Expression<Func<TEntity, object>>[] includeProperties) where TEntity : class, IBaseEntity
     {
         var query = IncludeProperties(includeProperties);
         return await query.FirstOrDefaultAsync(entity => entity.Id == id);
@@ -62,7 +56,7 @@ public class GenericRepository : IGenericRepository
         await _appDbContext.SaveChangesAsync();
     }
 
-    private IQueryable<TEntity> IncludeProperties<TEntity>(params Expression<Func<TEntity, object>>[] includeProperties) where TEntity : class,IBaseEntity
+    private IQueryable<TEntity> IncludeProperties<TEntity>(params Expression<Func<TEntity, object>>[] includeProperties) where TEntity : class, IBaseEntity
     {
         IQueryable<TEntity> entities = _appDbContext.Set<TEntity>();
         foreach (var includeProperty in includeProperties)
