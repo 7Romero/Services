@@ -4,6 +4,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Services.API.Infrastructure.Extensions;
 using Services.Bll;
+using Services.Bll.Interfaces;
+using Services.Bll.Services;
 using Services.Dal;
 using Services.Dal.Interfaces;
 using Services.Dal.Repositories;
@@ -34,6 +36,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddScoped<IGenericRepository, GenericRepository>();
+builder.Services.AddScoped<IRoleService, RoleService>();
+
 var authOptions = builder.Services.ConfigureAuthOptions(configuration);
 builder.Services.AddJwtAuthentication(authOptions);
 builder.Services.AddSwagger(configuration);
