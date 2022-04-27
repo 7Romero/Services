@@ -11,7 +11,7 @@ namespace Services.Dal.Seed
 {
     public class UsersSeed
     {
-        public static async Task Seed(UserManager<User> userManager)
+        public static async Task Seed(UserManager<User> userManager, RoleManager<Role> roleManager)
         {
             if (!userManager.Users.Any())
             {
@@ -20,8 +20,14 @@ namespace Services.Dal.Seed
                     UserName = "admin",
                     Email = "admin@onlinebookshop.com",
                 };
-
                 await userManager.CreateAsync(user, "Admin1!");
+
+                var roles = roleManager.Roles.ToList();
+
+                foreach (var role in roles)
+                {
+                    await userManager.AddToRoleAsync(user, role.Name);
+                }
             }
         }
     }
