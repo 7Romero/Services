@@ -36,35 +36,13 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddScoped<IGenericRepository, GenericRepository>();
 var authOptions = builder.Services.ConfigureAuthOptions(configuration);
 builder.Services.AddJwtAuthentication(authOptions);
-//builder.Services.AddScoped<IUserService, UserService>();
-
-/*builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
-                .GetBytes(builder.Configuration.GetSection("JWT:Secret").Value)),
-            ValidateIssuer = false,
-            ValidateAudience = false
-        };
-    });*/
+builder.Services.AddSwagger(configuration);
 
 builder.Services.AddAutoMapper(typeof(BllAssemblyMarker));
-builder.Services.AddSwaggerGen(options => {
-    options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
-    {
-        Description = "Standard Authorization header using the Bearer scheme (\"bearer {token}\")",
-        In = ParameterLocation.Header,
-        Name = "Authorization",
-        Type = SecuritySchemeType.ApiKey
-    });
-
-    options.OperationFilter<SecurityRequirementsOperationFilter>();
-});
 
 var app = builder.Build();
+
+await app.SeedData();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
