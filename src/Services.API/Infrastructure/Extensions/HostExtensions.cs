@@ -17,9 +17,11 @@ namespace Services.API.Infrastructure.Extensions
                 {
                     var context = services.GetRequiredService<AppDbContext>();
                     var userManager = services.GetRequiredService<UserManager<User>>();
+                    var roleManager = services.GetRequiredService<RoleManager<Role>>();
                     context.Database.Migrate();
 
-                    await UsersSeed.Seed(userManager);
+                    await RolesSeed.Seed(roleManager);
+                    await UsersSeed.Seed(userManager, roleManager);
                     await SkillSeed.Seed(context);
                     await SectionsSeed.Seed(context);
                     await CategoriesSeed.Seed(context);
