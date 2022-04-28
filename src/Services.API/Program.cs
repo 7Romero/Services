@@ -36,6 +36,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddScoped<IGenericRepository, GenericRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 
 var authOptions = builder.Services.ConfigureAuthOptions(configuration);

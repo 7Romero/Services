@@ -9,9 +9,8 @@ namespace Services.Common.Dtos.User;
 public class UserDto
 {
     public Guid Id { get; set; }
-    public string NickName { get; set; } = string.Empty;
-    //public string FirstName { get; set; } = string.Empty;
-    //public string LastName { get; set; } = string.Empty;
+    public string Username { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
     public decimal Balance { get; set; }
-    public float Rating { get; set; }
 }
