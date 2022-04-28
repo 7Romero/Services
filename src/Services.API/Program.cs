@@ -39,6 +39,7 @@ builder.Services.AddScoped<IGenericRepository, GenericRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<ISectionService, SectionService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 var authOptions = builder.Services.ConfigureAuthOptions(configuration);
 builder.Services.AddJwtAuthentication(authOptions);
