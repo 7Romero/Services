@@ -40,6 +40,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<ISectionService, SectionService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<ISkillService, SkillService>();
 
 var authOptions = builder.Services.ConfigureAuthOptions(configuration);
 builder.Services.AddJwtAuthentication(authOptions);
