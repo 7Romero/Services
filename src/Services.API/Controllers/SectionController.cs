@@ -15,36 +15,36 @@ namespace Services.API.Controllers
         [HttpGet("{id}")]
         public async Task<SectionDto> GetSection(Guid id)
         {
-            var rectionDto = await _sectionService.GetSection(id);
-            return rectionDto;
+            var sectionDto = await _sectionService.GetSection(id);
+            return sectionDto;
         }
         [HttpPost]
-        public async Task<IActionResult> CreateBook(SectionForUpdateDto rectionForUpdateDto)
+        public async Task<IActionResult> CreateSection(SectionForUpdateDto sectionForUpdateDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var rectionDto = await _sectionService.CreateSection(rectionForUpdateDto);
+            var sectionDto = await _sectionService.CreateSection(sectionForUpdateDto);
 
-            return CreatedAtAction(nameof(GetSection), new { id = rectionDto.Id }, rectionDto);
+            return CreatedAtAction(nameof(GetSection), new { id = sectionDto.Id }, sectionDto);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateBook(Guid id, SectionForUpdateDto rectionDto)
+        public async Task<IActionResult> UpdateSection(Guid id, SectionForUpdateDto sectionForUpdateDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            await _sectionService.UpdateSection(id, rectionDto);
+            await _sectionService.UpdateSection(id, sectionForUpdateDto);
             return Ok();
         }
 
         [HttpDelete("{id}")]
-        public async Task DeleteBook(Guid id)
+        public async Task DeleteSection(Guid id)
         {
             await _sectionService.DeleteSection(id);
         }
