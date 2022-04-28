@@ -11,9 +11,9 @@ namespace Services.Bll.Interfaces
     {
         Task<RoleDto> GetRole(Guid id);
 
-        Task<RoleDto> CreateRole(RoleForUpdateDto roleDto);
+        Task<RoleDto> CreateRole(RoleForUpdateDto roleForUpdateDto);
 
-        Task UpdateRole(Guid id, RoleForUpdateDto roleDto);
+        Task UpdateRole(Guid id, RoleForUpdateDto roleForUpdateDto);
 
         Task DeleteRole(Guid id);
     }

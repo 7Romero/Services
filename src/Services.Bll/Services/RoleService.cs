@@ -45,10 +45,10 @@ namespace Services.Bll.Services
             return roleDto;
         }
 
-        public async Task UpdateRole(Guid id, RoleForUpdateDto roleDto)
+        public async Task UpdateRole(Guid id, RoleForUpdateDto roleForUpdateDto)
         {
             var role = await _roleManager.FindByIdAsync(id.ToString());
-            _mapper.Map(roleDto, role);
+            _mapper.Map(roleForUpdateDto, role);
             await _roleManager.UpdateAsync(role);
         }
     }
