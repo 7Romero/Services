@@ -38,6 +38,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddScoped<IGenericRepository, GenericRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
+builder.Services.AddScoped<ISectionService, SectionService>();
 
 var authOptions = builder.Services.ConfigureAuthOptions(configuration);
 builder.Services.AddJwtAuthentication(authOptions);
