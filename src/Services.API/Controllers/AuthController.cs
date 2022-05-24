@@ -25,26 +25,48 @@ public class AuthController : AppBaseController
         _authenticationOptions = authenticationOptions.Value;
     }
 
-    [HttpGet]
-    [Authorize]
-    public async Task<IActionResult> GetInfo()
+    [HttpGet("getMe")]
+    public async Task<IActionResult> GetMe()
     {
-        var userName = User.FindFirstValue(ClaimsIdentity.DefaultNameClaimType);
-        return Ok(userName);
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        var user = await _userManager.FindByIdAsync(userId);
+        var userRoles = await _userManager.GetRolesAsync(user);
+
+        var userGetMe = new UserGetMeDto()
+        {
+            Username = user.UserName,
+            Roles = userRoles,
+        };
+
+        return Ok(userGetMe);
     }
 
     [AllowAnonymous]
     [HttpPost("register")]
-    public async Task<IActionResult> Register(UserAuthDto userAuthDto)
+    public async Task<IActionResult> Register(UserRegisterDto userRegisterDto)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(new { errorText = "Invalid username or password." });
         }
 
-        User user = new User { UserName = userAuthDto.Username };
+        var checkUser = await _userManager.FindByNameAsync(userRegisterDto.Username);
 
-        var result = await _userManager.CreateAsync(user, userAuthDto.Password);
+        if (checkUser != null)
+        {
+            return BadRequest(new { errorText = "User with this username already exists" });
+        }
+
+        var user = new User 
+        { 
+            UserName = userRegisterDto.Username,
+            FirstName = userRegisterDto.FirstName,
+            LastName = userRegisterDto.LastName,
+            Email = userRegisterDto.Email,
+        };
+
+        var result = await _userManager.CreateAsync(user, userRegisterDto.Password);
         if (result.Succeeded)
         {
             await _signInManager.SignInAsync(user, false);
@@ -57,7 +79,7 @@ public class AuthController : AppBaseController
             }
         }
 
-        return Ok(userAuthDto);
+        return Ok(userRegisterDto);
     }
 
     [AllowAnonymous]
@@ -81,15 +103,15 @@ public class AuthController : AppBaseController
                             audience: _authenticationOptions.Audience,
                             notBefore: DateTime.Now,
                             claims: identity.Claims,
-                            expires: DateTime.Now.AddMonths(_authenticationOptions.TokenLifetime),
+                            expires: DateTime.Now.AddHours(_authenticationOptions.TokenLifetime),
                             signingCredentials: new SigningCredentials(_authenticationOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
         var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
 
         var response = new
         {
-            access_token = encodedJwt,
+            token = encodedJwt,
         };
-
+        
         return Json(response);
     }
     private async Task<ClaimsIdentity?> GetIdentity(UserAuthDto userAuthDto)
@@ -107,15 +129,15 @@ public class AuthController : AppBaseController
 
         var claims = new List<Claim>()
         {
-            new Claim(ClaimsIdentity.DefaultNameClaimType, user.UserName)
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
         };
 
         foreach (var role in userRoles)
         {
-            claims.Add(new Claim(ClaimsIdentity.DefaultRoleClaimType, role));
+            claims.Add(new Claim(ClaimTypes.Role, role));
         }
 
-        ClaimsIdentity claimsIdentity = new(claims, _authenticationOptions.SecretKey, ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
+        ClaimsIdentity claimsIdentity = new(claims, _authenticationOptions.SecretKey, ClaimTypes.NameIdentifier, ClaimTypes.Role);
 
         return claimsIdentity;
     }

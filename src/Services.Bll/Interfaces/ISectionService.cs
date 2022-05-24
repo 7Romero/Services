@@ -10,6 +10,7 @@ namespace Services.Bll.Interfaces
     public interface ISectionService
     {
         Task<SectionDto> GetSection(Guid id);
+        Task<List<SectionListDto>> GetAllSection();
 
         Task<SectionDto> CreateSection(SectionForUpdateDto sectionForUpdateDto);
 

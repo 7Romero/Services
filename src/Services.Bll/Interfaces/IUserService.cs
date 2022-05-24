@@ -9,7 +9,7 @@ namespace Services.Bll.Interfaces
 {
     public interface IUserService
     {
-        Task<UserDto> GetUser(Guid id);
+        Task<UserDto> GetUser(string userName);
 
         Task<UserDto> CreateUser(UserForUpdateDto userForUpdateDto);
 

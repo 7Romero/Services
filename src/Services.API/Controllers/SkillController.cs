@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Services.Bll.Interfaces;
 using Services.Common.Dtos.Skill;
 
 namespace Services.API.Controllers
 {
     [Route("api/skill")]
-    public class SkillController : Controller
+    public class SkillController : AppBaseController
     {
         private readonly ISkillService _skillService;
         public SkillController(ISkillService skillService)
@@ -16,9 +17,10 @@ namespace Services.API.Controllers
         public async Task<SkillDto> GetSkill(Guid id)
         {
             var skillDto = await _skillService.GetSkill(id);
+
             return skillDto;
         }
-        [HttpPost]
+        [HttpPost, Authorize(Roles = "Administrator")]
         public async Task<IActionResult> CreateSkill(SkillForUpdateDto skillForUpdateDto)
         {
             if (!ModelState.IsValid)
@@ -31,7 +33,7 @@ namespace Services.API.Controllers
             return CreatedAtAction(nameof(GetSkill), new { id = skillDto.Id }, skillDto);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{id}"), Authorize(Roles = "Administrator")]
         public async Task<IActionResult> UpdateSkill(Guid id, SkillForUpdateDto skillForUpdateDto)
         {
             if (!ModelState.IsValid)
@@ -40,10 +42,11 @@ namespace Services.API.Controllers
             }
 
             await _skillService.UpdateSkill(id, skillForUpdateDto);
+
             return Ok();
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}"), Authorize(Roles = "Administrator")]
         public async Task DeleteSkill(Guid id)
         {
             await _skillService.DeleteSkill(id);

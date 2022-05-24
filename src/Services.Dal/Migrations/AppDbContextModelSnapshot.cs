@@ -34,7 +34,38 @@ namespace Services.Dal.Migrations
 
                     b.HasIndex("SkillsId");
 
-                    b.ToTable("OrderSkill");
+                    b.ToTable("OrderSkill", (string)null);
+                });
+
+            modelBuilder.Entity("Services.Domain.Application", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("SuggestedPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("SuggestedTime")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Applications", (string)null);
                 });
 
             modelBuilder.Entity("Services.Domain.Auth.Role", b =>
@@ -111,6 +142,9 @@ namespace Services.Dal.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("DescriptionTitle")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -146,6 +180,11 @@ namespace Services.Dal.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<DateTime>("RegistrationDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getdate()");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
@@ -266,7 +305,7 @@ namespace Services.Dal.Migrations
 
                     b.HasIndex("SectionId");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("Services.Domain.Order", b =>
@@ -277,6 +316,11 @@ namespace Services.Dal.Migrations
 
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("Created")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getdate()");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -298,7 +342,7 @@ namespace Services.Dal.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("Services.Domain.Section", b =>
@@ -313,7 +357,7 @@ namespace Services.Dal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Sections");
+                    b.ToTable("Sections", (string)null);
                 });
 
             modelBuilder.Entity("Services.Domain.Skill", b =>
@@ -328,7 +372,7 @@ namespace Services.Dal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Skills");
+                    b.ToTable("Skills", (string)null);
                 });
 
             modelBuilder.Entity("OrderSkill", b =>
@@ -344,6 +388,25 @@ namespace Services.Dal.Migrations
                         .HasForeignKey("SkillsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Services.Domain.Application", b =>
+                {
+                    b.HasOne("Services.Domain.Order", "Order")
+                        .WithMany("Applications")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Services.Domain.Auth.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Services.Domain.Auth.RoleClaim", b =>
@@ -430,6 +493,11 @@ namespace Services.Dal.Migrations
             modelBuilder.Entity("Services.Domain.Category", b =>
                 {
                     b.Navigation("Orders");
+                });
+
+            modelBuilder.Entity("Services.Domain.Order", b =>
+                {
+                    b.Navigation("Applications");
                 });
 
             modelBuilder.Entity("Services.Domain.Section", b =>

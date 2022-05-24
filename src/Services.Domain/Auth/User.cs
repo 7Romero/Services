@@ -11,7 +11,9 @@ public class User : IdentityUser<Guid>, IBaseEntity
 {
     public string? FirstName { get; set; }
     public string? LastName { get; set; }
+    public string? DescriptionTitle { get; set; }
     public string? Description { get; set; }
     public decimal Balance { get; set; }
     public string? AvatarLink { get; set; }
+    public DateTime RegistrationDate { get; set; } = DateTime.Now;
 }

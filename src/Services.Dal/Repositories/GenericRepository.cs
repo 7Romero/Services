@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Services.Common.Exceptions;
+using Services.Common.Models.PagedRequest;
+using Services.Dal.Extensions;
 using Services.Dal.Interfaces;
 using Services.Domain;
 using System.Linq.Expressions;
@@ -50,10 +52,22 @@ public class GenericRepository : IGenericRepository
         var query = IncludeProperties(includeProperties);
         return await query.FirstOrDefaultAsync(entity => entity.Id == id);
     }
+    public async Task<List<TEntity>> GetAllWithInclude<TEntity>(params Expression<Func<TEntity, object>>[] includeProperties) where TEntity : class, IBaseEntity
+    {
+        var query = IncludeProperties(includeProperties);
+
+        return await query.ToListAsync();
+    }
 
     public async Task SaveChangesAsync()
     {
         await _appDbContext.SaveChangesAsync();
+    }
+
+    public async Task<PaginatedResult<TDto>> GetPagedData<TEntity, TDto>(PagedRequest pagedRequest) where TEntity : BaseEntity
+                                                                                            where TDto : class
+    {
+        return await _appDbContext.Set<TEntity>().CreatePaginatedResultAsync<TEntity, TDto>(pagedRequest, _mapper);
     }
 
     private IQueryable<TEntity> IncludeProperties<TEntity>(params Expression<Func<TEntity, object>>[] includeProperties) where TEntity : class, IBaseEntity

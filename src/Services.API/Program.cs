@@ -1,7 +1,4 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
 using Services.API.Infrastructure.Extensions;
 using Services.Bll;
 using Services.Bll.Interfaces;
@@ -10,8 +7,6 @@ using Services.Dal;
 using Services.Dal.Interfaces;
 using Services.Dal.Repositories;
 using Services.Domain.Auth;
-using Swashbuckle.AspNetCore.Filters;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
@@ -35,12 +30,16 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
+builder.Services.AddCors(c => { c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin()); });
+
 builder.Services.AddScoped<IGenericRepository, GenericRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<ISectionService, SectionService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ISkillService, SkillService>();
+builder.Services.AddScoped<IApplicationService, ApplicationService>();
 
 var authOptions = builder.Services.ConfigureAuthOptions(configuration);
 builder.Services.AddJwtAuthentication(authOptions);
@@ -59,7 +58,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseExceptionHandling();
+app.UseDbTransaction();
+
 app.UseHttpsRedirection();
+
+app.UseCors(cors => cors.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 
 // Authentication & Authorization
 app.UseAuthentication();

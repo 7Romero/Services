@@ -6,7 +6,6 @@ public class DbTransactionMiddleware
 {
     private readonly RequestDelegate _next;
 
-
     public DbTransactionMiddleware(RequestDelegate next)
     {
         _next = next;

@@ -28,6 +28,7 @@ public class AppDbContext : IdentityDbContext<User, Role, Guid, UserClaim, UserR
     public DbSet<Category> Categories { get; set; } = null!;
     public DbSet<Section> Sections { get; set; } = null!;
     public DbSet<Skill> Skills { get; set; } = null!;
+    public DbSet<Application> Applications { get; set; } = null!;
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         if (!optionsBuilder.IsConfigured)
@@ -47,6 +48,6 @@ public class AppDbContext : IdentityDbContext<User, Role, Guid, UserClaim, UserR
         modelBuilder.Entity<RoleClaim>().ToTable("RoleClaims");
         modelBuilder.Entity<UserRole>().ToTable("UserRoles");
 
-        //modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
     }
 }

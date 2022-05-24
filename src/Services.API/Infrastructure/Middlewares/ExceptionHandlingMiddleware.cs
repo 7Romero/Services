@@ -26,7 +26,7 @@ public class ExceptionHandlingMiddleware
 
             switch (ex)
             {
-                case ValidationException _:
+                case ValidationException:
                     context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                     break;
                 default:

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Services.Bll.Interfaces;
 using Services.Common.Dtos.Category;
 
@@ -12,13 +13,15 @@ namespace Services.API.Controllers
         {
             _categoryService = categoryService;
         }
+
         [HttpGet("{id}")]
         public async Task<CategoryDto> GetCategory(Guid id)
         {
             var categoryDto = await _categoryService.GetCategory(id);
+
             return categoryDto;
         }
-        [HttpPost]
+        [HttpPost, Authorize(Roles = "Administrator")]
         public async Task<IActionResult> CreateCategory(CategoryForUpdateDto categoryForUpdateDto)
         {
             if (!ModelState.IsValid)
@@ -31,7 +34,7 @@ namespace Services.API.Controllers
             return CreatedAtAction(nameof(GetCategory), new { id = categoryDto.Id }, categoryDto);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{id}"), Authorize(Roles = "Administrator")]
         public async Task<IActionResult> UpdateCategory(Guid id, CategoryForUpdateDto categoryForUpdateDto)
         {
             if (!ModelState.IsValid)
@@ -40,10 +43,11 @@ namespace Services.API.Controllers
             }
 
             await _categoryService.UpdateCategory(id, categoryForUpdateDto);
+
             return Ok();
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}"), Authorize(Roles = "Administrator")]
         public async Task DeleteCategory(Guid id)
         {
             await _categoryService.DeleteCategory(id);

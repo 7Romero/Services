@@ -14,6 +14,7 @@ namespace Services.Bll.Profiles
         public CategoryProfile()
         {
             CreateMap<Category, CategoryDto>();
+            CreateMap<Category, CategoryForSectionDto>();
             CreateMap<CategoryForUpdateDto, Category>();
         }
     }

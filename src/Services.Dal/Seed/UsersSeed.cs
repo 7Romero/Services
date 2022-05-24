@@ -18,9 +18,9 @@ namespace Services.Dal.Seed
                 var user = new User()
                 {
                     UserName = "admin",
-                    Email = "admin@onlinebookshop.com",
+                    Email = "admin@services.com",
                 };
-                await userManager.CreateAsync(user, "Admin1!");
+                await userManager.CreateAsync(user, "Admin1!!");
 
                 var roles = roleManager.Roles.ToList();
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Services.Bll.Interfaces;
 using Services.Common.Dtos.Role;
 
@@ -18,10 +19,11 @@ namespace Services.API.Controllers
         public async Task<RoleDto> GetRole(Guid id)
         {
             var roleDto = await _roleService.GetRole(id);
+
             return roleDto;
         }
-        [HttpPost]
-        public async Task<IActionResult> CreateBook(RoleForUpdateDto roleForUpdateDto)
+        [HttpPost, Authorize(Roles = "Administrator")]
+        public async Task<IActionResult> CreateRole(RoleForUpdateDto roleForUpdateDto)
         {
             if (!ModelState.IsValid)
             {
@@ -33,8 +35,8 @@ namespace Services.API.Controllers
             return CreatedAtAction(nameof(GetRole), new { id = roleDto.Id }, roleDto);
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateBook(Guid id, RoleForUpdateDto roleDto)
+        [HttpPut("{id}"), Authorize(Roles = "Administrator")]
+        public async Task<IActionResult> UpdateRole(Guid id, RoleForUpdateDto roleDto)
         {
             if (!ModelState.IsValid)
             {
@@ -45,8 +47,8 @@ namespace Services.API.Controllers
             return Ok();
         }
 
-        [HttpDelete("{id}")]
-        public async Task DeleteBook(Guid id)
+        [HttpDelete("{id}"), Authorize(Roles = "Administrator")]
+        public async Task DeleteRole(Guid id)
         {
             await _roleService.DeleteRole(id);
         }

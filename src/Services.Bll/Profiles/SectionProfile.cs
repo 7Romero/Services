@@ -13,6 +13,8 @@ namespace Services.Bll.Profiles
     {
         public SectionProfile()
         {
+            CreateMap<Section, SectionListDto>()
+                .ForMember(x => x.Category, y => y.MapFrom(z => z.Category));
             CreateMap<Section, SectionDto>();
             CreateMap<SectionForUpdateDto, Section>();
         }

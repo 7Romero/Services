@@ -1,4 +1,5 @@
-﻿using Services.Domain;
+﻿using Services.Common.Models.PagedRequest;
+using Services.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,8 @@ public interface IGenericRepository
 {
     Task<TEntity> GetById<TEntity>(Guid id) where TEntity : class,IBaseEntity;
 
+    Task<List<TEntity>> GetAllWithInclude<TEntity>(params Expression<Func<TEntity, object>>[] includeProperties) where TEntity : class, IBaseEntity;
+
     Task<TEntity> GetByIdWithInclude<TEntity>(Guid id, params Expression<Func<TEntity, object>>[] includeProperties) where TEntity : class,IBaseEntity;
 
     Task<List<TEntity>> GetAll<TEntity>() where TEntity : class,IBaseEntity;
@@ -22,5 +25,6 @@ public interface IGenericRepository
 
     Task<TEntity> Delete<TEntity>(Guid id) where TEntity : class,IBaseEntity;
 
-    //Task<PaginatedResult<TDto>> GetPagedData<TEntity, TDto>(PagedRequest pagedRequest) where TEntity : BaseEntity                                                                                   where TDto : class;
+    Task<PaginatedResult<TDto>> GetPagedData<TEntity, TDto>(PagedRequest pagedRequest) where TEntity : BaseEntity
+                                                                                       where TDto : class;
 }

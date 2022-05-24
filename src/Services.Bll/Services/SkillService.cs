@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Services.Bll.Interfaces;
 using Services.Common.Dtos.Skill;
+using Services.Common.Exceptions;
 using Services.Dal.Interfaces;
 using Services.Domain;
 using System;
@@ -34,6 +35,9 @@ namespace Services.Bll.Services
 
         public async Task DeleteSkill(Guid id)
         {
+            var skill = await _genericRepository.GetById<Skill>(id);
+            CheckExist(skill);
+
             await _genericRepository.Delete<Skill>(id);
             await _genericRepository.SaveChangesAsync();
         }
@@ -41,15 +45,28 @@ namespace Services.Bll.Services
         public async Task<SkillDto> GetSkill(Guid id)
         {
             var skill = await _genericRepository.GetById<Skill>(id);
+            CheckExist(skill);
+
             var skillDto = _mapper.Map<SkillDto>(skill);
+
             return skillDto;
         }
 
         public async Task UpdateSkill(Guid id, SkillForUpdateDto skillForUpdateDto)
         {
             var skill = await _genericRepository.GetById<Skill>(id);
+            CheckExist(skill);
+
             _mapper.Map(skillForUpdateDto, skill);
+
             await _genericRepository.SaveChangesAsync();
+        }
+        private static void CheckExist(Skill? skill)
+        {
+            if (skill == null)
+            {
+                throw new ValidationException("Skill not found");
+            }
         }
     }
 }

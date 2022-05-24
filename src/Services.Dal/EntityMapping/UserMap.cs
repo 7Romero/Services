@@ -13,6 +13,8 @@ public class UserMap : IEntityTypeConfiguration<User>
 {
     public void Configure(EntityTypeBuilder<User> builder)
     {
-        
+        builder
+            .Property(p => p.RegistrationDate)
+            .HasDefaultValueSql("getdate()");
     }
 }

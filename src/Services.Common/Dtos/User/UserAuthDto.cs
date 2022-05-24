@@ -10,7 +10,7 @@ namespace Services.Common.Dtos.User;
 public class UserAuthDto
 {
     [Required]
-    public string Username { get; set; } = string.Empty;
+    public string Username { get; set; }
     [Required]
-    public string Password { get; set; } = string.Empty;
+    public string Password { get; set; }
 }

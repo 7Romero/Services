@@ -12,5 +12,7 @@ public class UserDto
     public string Username { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
-    public decimal Balance { get; set; }
+    public string DescriptionTitle { get; set; }
+    public string Description { get; set; }
+    public DateTime RegistrationDate { get; set; }
 }

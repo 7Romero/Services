@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Services.Bll.Interfaces;
 using Services.Common.Dtos.Role;
+using Services.Common.Exceptions;
 using Services.Domain.Auth;
 using System;
 using System.Collections.Generic;
@@ -34,12 +35,16 @@ namespace Services.Bll.Services
         public async Task DeleteRole(Guid id)
         {
             var role = await _roleManager.FindByIdAsync(id.ToString());
+            CheckExist(role);
+
             await _roleManager.DeleteAsync(role);
         }
 
         public async Task<RoleDto> GetRole(Guid id)
         {
             var role = await _roleManager.FindByIdAsync(id.ToString());
+            CheckExist(role);
+
             var roleDto = _mapper.Map<RoleDto>(role);
 
             return roleDto;
@@ -48,8 +53,19 @@ namespace Services.Bll.Services
         public async Task UpdateRole(Guid id, RoleForUpdateDto roleForUpdateDto)
         {
             var role = await _roleManager.FindByIdAsync(id.ToString());
+            CheckExist(role);
+
             _mapper.Map(roleForUpdateDto, role);
+
             await _roleManager.UpdateAsync(role);
+        }
+
+        private static void CheckExist(Role? role)
+        {
+            if (role == null)
+            {
+                throw new ValidationException("Role not found");
+            }
         }
     }
 }
