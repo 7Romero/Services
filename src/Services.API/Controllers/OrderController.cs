@@ -34,15 +34,6 @@ namespace Services.API.Controllers
             return orderDto;
         }
 
-        [HttpGet("/WithApplication/{id}")]
-        public async Task<OrderWithApplicationDto> GetOrderWithApplication(Guid id)
-        {
-            var userId = new Guid(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var orderDto = await _orderService.GetOrderWithApplication(id, userId);
-
-            return orderDto;
-        }
-
         [HttpPost]
         public async Task<IActionResult> CreateOrder(OrderForUpdateDto orderForUpdateDto)
         {
@@ -97,6 +88,20 @@ namespace Services.API.Controllers
             var userId = new Guid(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
             await _orderService.DeleteOrderYourself(id, userId);
+        }
+        [HttpPost("appointFreelancer")]
+        public async Task<IActionResult> AppointFreelancer(SelectFreelancerForOrderDto selectFreelancerForOrderDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var userId = new Guid(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            await _orderService.AppointFreelancer(selectFreelancerForOrderDto, userId);
+
+            return Ok();
         }
     }
 }

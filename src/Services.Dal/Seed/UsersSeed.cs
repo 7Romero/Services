@@ -18,6 +18,8 @@ namespace Services.Dal.Seed
                 var user = new User()
                 {
                     UserName = "admin",
+                    FirstName = "Sergiu",
+                    LastName = "Gurschi",
                     Email = "admin@services.com",
                 };
                 await userManager.CreateAsync(user, "Admin1!!");

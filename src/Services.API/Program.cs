@@ -1,15 +1,19 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Services.API.Infrastructure.Extensions;
 using Services.Bll;
 using Services.Bll.Interfaces;
 using Services.Bll.Services;
+using Services.Common.Models.Stripe;
 using Services.Dal;
 using Services.Dal.Interfaces;
 using Services.Dal.Repositories;
 using Services.Domain.Auth;
+using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
+
 
 // For Entity Framework
 
@@ -17,6 +21,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
 });
+
+// Stripe
+
+StripeConfiguration.ApiKey = configuration.GetValue<string>("stripe:SecretKey");
+builder.Services.Configure<StripeSettings>(configuration.GetSection("stripe"));
 
 // Adding Authentication
 
@@ -34,7 +43,7 @@ builder.Services.AddCors(c => { c.AddPolicy("AllowOrigin", options => options.Al
 
 builder.Services.AddScoped<IGenericRepository, GenericRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IOrderService, Services.Bll.Services.OrderService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<ISectionService, SectionService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
@@ -64,6 +73,12 @@ app.UseDbTransaction();
 app.UseHttpsRedirection();
 
 app.UseCors(cors => cors.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+
+app.UseStaticFiles(new StaticFileOptions()
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"Resources")),
+    RequestPath = new PathString("/Resources")
+});
 
 // Authentication & Authorization
 app.UseAuthentication();

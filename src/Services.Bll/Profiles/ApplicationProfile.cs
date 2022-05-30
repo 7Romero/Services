@@ -13,7 +13,8 @@ namespace Services.Bll.Profiles
     {
         public ApplicationProfile()
         {
-            CreateMap<Application, ApplicationDto>();
+            CreateMap<Application, ApplicationDto>()
+                .ForMember(x => x.User, y => y.MapFrom(z => z.User));
             CreateMap<ApplicationForUpdateDto, Application>();
         }
     }

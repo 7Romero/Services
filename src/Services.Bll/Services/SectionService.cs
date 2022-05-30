@@ -51,6 +51,7 @@ namespace Services.Bll.Services
 
             return sectionDto;
         }
+
         public async Task<List<SectionListDto>> GetAllSection()
         {
             var section = await _genericRepository.GetAllWithInclude<Section>(section => section.Category);
@@ -68,6 +69,7 @@ namespace Services.Bll.Services
 
             await _genericRepository.SaveChangesAsync();
         }
+
         private static void CheckExist(Section? section)
         {
             if (section == null)

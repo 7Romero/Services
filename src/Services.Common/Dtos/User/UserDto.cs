@@ -14,5 +14,6 @@ public class UserDto
     public string LastName { get; set; }
     public string DescriptionTitle { get; set; }
     public string Description { get; set; }
+    public string AvatarLink { get; set; }
     public DateTime RegistrationDate { get; set; }
 }

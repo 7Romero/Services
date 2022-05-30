@@ -15,6 +15,8 @@ namespace Services.Bll.Interfaces
 
         Task UpdateUser(Guid id, UserForUpdateDto userForUpdateDto);
 
+        Task UpdateUserImg(Guid id, UserImgLoadDto userForUpdateDto);
+
         Task DeleteUser(Guid id);
     }
 }

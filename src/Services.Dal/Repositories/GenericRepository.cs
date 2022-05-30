@@ -70,9 +70,40 @@ public class GenericRepository : IGenericRepository
         return await _appDbContext.Set<TEntity>().CreatePaginatedResultAsync<TEntity, TDto>(pagedRequest, _mapper);
     }
 
+    public async Task<TEntity> GetFirstWithInclude<TEntity>(Expression<Func<TEntity, bool>> predicate,
+                                                   params Expression<Func<TEntity, object>>[] includeProperties) where TEntity : class, IBaseEntity
+    {
+        var query = IncludeProperties(includeProperties);
+
+        var entities = await query.FirstOrDefaultAsync(predicate);
+
+        if (entities == null)
+        {
+            throw new ValidationException($"Object of type {typeof(TEntity)} was not found");
+        }
+
+        return entities;
+    }
+
+    public async Task<List<TEntity>> GetByWhereWithInclude<TEntity>(Expression<Func<TEntity, bool>> predicate, 
+                                                       params Expression<Func<TEntity, object>>[] includeProperties) where TEntity : class, IBaseEntity
+    {
+        var query = IncludeProperties(includeProperties);
+
+        var entities = await query.Where(predicate).ToListAsync();
+
+        if (entities == null)
+        {
+            throw new ValidationException($"Object of type {typeof(TEntity)} was not found");
+        }
+
+        return entities;
+    }
+
     private IQueryable<TEntity> IncludeProperties<TEntity>(params Expression<Func<TEntity, object>>[] includeProperties) where TEntity : class, IBaseEntity
     {
         IQueryable<TEntity> entities = _appDbContext.Set<TEntity>();
+
         foreach (var includeProperty in includeProperties)
         {
             entities = entities.Include(includeProperty);

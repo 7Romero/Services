@@ -17,6 +17,7 @@ namespace Services.Common.Dtos.Order
         public string Description { get; set; }
         public decimal SuggestedPrice { get; set; }
         public UserDto User { get; set; }
+        public UserDto? Freelancer { get; set; }
         public Guid CategoryId { get; set; }
     }
 }

@@ -97,12 +97,6 @@ public static class QueryableExtensions
             var propertyValues = requestFilters.Filters.Select(filter => filter.Value).ToArray();
 
             query = query.Where(predicate.ToString(), propertyValues);
-
-            Console.WriteLine("\n\n\n");
-            Console.WriteLine(predicate.ToString());
-            Console.WriteLine("\n\n\n");
-            Console.WriteLine(propertyValues);
-            Console.WriteLine("\n\n\n");
         }
 
         return query;

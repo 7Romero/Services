@@ -23,6 +23,23 @@ namespace Services.API.Controllers
             return applicationDto;
         }
 
+        [HttpGet("order/{id}")]
+        public async Task<ApplicationDto> GetApplicationByOrderId(Guid id)
+        {
+            var userId = new Guid(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var applicationDto = await _applicationService.GetApplicationByOrderId(id, userId);
+
+            return applicationDto;
+        }
+
+        [HttpGet("allForOrder/{id}")]
+        public async Task<List<ApplicationDto>> GetApplicationsByOrderId(Guid id)
+        {
+            var applicationDto = await _applicationService.GetApplicationsByOrderId(id);
+
+            return applicationDto;
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateApplication(ApplicationForUpdateDto applicationForUpdateDto)
         {
@@ -37,7 +54,7 @@ namespace Services.API.Controllers
             return CreatedAtAction(nameof(GetApplication), new { id = applicationDto.Id }, applicationDto);
         }
 
-        [HttpPut("{id}"), Authorize(Roles = "Administrator")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> UpdateApplication(Guid id, ApplicationForUpdateDto applicationForUpdateDto)
         {
             if (!ModelState.IsValid)

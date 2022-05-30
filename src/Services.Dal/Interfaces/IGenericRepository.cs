@@ -15,6 +15,12 @@ public interface IGenericRepository
 
     Task<List<TEntity>> GetAllWithInclude<TEntity>(params Expression<Func<TEntity, object>>[] includeProperties) where TEntity : class, IBaseEntity;
 
+    Task<TEntity> GetFirstWithInclude<TEntity>(Expression<Func<TEntity, bool>> predicate,
+                                                params Expression<Func<TEntity, object>>[] includeProperties) where TEntity : class, IBaseEntity;
+
+    Task<List<TEntity>> GetByWhereWithInclude<TEntity>(Expression<Func<TEntity, bool>> predicate,
+                                                params Expression<Func<TEntity, object>>[] includeProperties) where TEntity : class, IBaseEntity;
+
     Task<TEntity> GetByIdWithInclude<TEntity>(Guid id, params Expression<Func<TEntity, object>>[] includeProperties) where TEntity : class,IBaseEntity;
 
     Task<List<TEntity>> GetAll<TEntity>() where TEntity : class,IBaseEntity;

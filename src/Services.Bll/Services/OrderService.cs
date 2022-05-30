@@ -26,13 +26,13 @@ namespace Services.Bll.Services
         }
         public async Task<OrderDto> CreateOrder(OrderForUpdateDto orderForUpdateDto, Guid userId)
         {
-            var category = _genericRepository.GetById<Category>(orderForUpdateDto.CategoryId);
+            var category = await _genericRepository.GetById<Category>(orderForUpdateDto.CategoryId);
             if (category == null) 
             {
                 throw new ValidationException("Category not found");
             }
 
-            var user = _genericRepository.GetById<User>(userId);
+            var user = await _genericRepository.GetById<User>(userId);
             if (user == null)
             {
                 throw new ValidationException("User not found");
@@ -61,25 +61,10 @@ namespace Services.Bll.Services
 
         public async Task<OrderDto> GetOrder(Guid id)
         {
-            var order = await _genericRepository.GetByIdWithInclude<Order>(id, order => order.Category, order => order.User);
+            var order = await _genericRepository.GetByIdWithInclude<Order>(id, order => order.Category, order => order.User, order => order.Freelancer);
             CheckExist(order);
 
             var orderDto = _mapper.Map<OrderDto>(order);
-
-            return orderDto;
-        }
-
-        public async Task<OrderWithApplicationDto> GetOrderWithApplication(Guid id, Guid userId)
-        {
-            var order = await _genericRepository.GetByIdWithInclude<Order>(id, order => order.Applications);
-            CheckExist(order);
-
-            if (order.UserId != userId)
-            {
-                throw new ValidationException("Access error");
-            }
-
-            var orderDto = _mapper.Map<OrderWithApplicationDto>(order);
 
             return orderDto;
         }
@@ -129,6 +114,22 @@ namespace Services.Bll.Services
 
             await _genericRepository.SaveChangesAsync();
         }
+
+        public async Task AppointFreelancer(SelectFreelancerForOrderDto selectFreelancerForOrderDto, Guid userId)
+        {
+            var order = await _genericRepository.GetById<Order>(selectFreelancerForOrderDto.OrderId);
+            CheckExist(order);
+
+            if (order.UserId != userId)
+            {
+                throw new ValidationException("Access error");
+            }
+
+            order.FreelancerId = selectFreelancerForOrderDto.FreelancerId;
+
+            await _genericRepository.SaveChangesAsync();
+        }
+
         private static void CheckExist(Order? order)
         {
             if (order == null)

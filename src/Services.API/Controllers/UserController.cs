@@ -66,6 +66,22 @@ namespace Services.API.Controllers
             return Ok();
         }
 
+        [HttpPut("img")]
+        public async Task<IActionResult> UpdateUserImg([FromForm] UserImgLoadDto userDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var id = new Guid(userId);
+
+            await _userService.UpdateUserImg(id, userDto);
+
+            return Ok();
+        }
+
         [HttpDelete("{id}"), Authorize(Roles = "Administrator")]
         public async Task DeleteUser(Guid id)
         {

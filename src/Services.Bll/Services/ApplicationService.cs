@@ -26,7 +26,7 @@ namespace Services.Bll.Services
 
         public async Task<ApplicationDto> CreateApplication(ApplicationForUpdateDto applicationForUpdateDto, Guid userId)
         {
-            var user = _genericRepository.GetById<User>(userId);
+            var user = await _genericRepository.GetById<User>(userId);
             if (user == null)
             {
                 throw new ValidationException("User not found");
@@ -61,6 +61,28 @@ namespace Services.Bll.Services
 
             return applicationDto;
         }
+        public async Task<ApplicationDto> GetApplicationByOrderId(Guid id, Guid userId)
+        {
+            var user = await _genericRepository.GetById<User>(userId);
+            if (user == null)
+            {
+                throw new ValidationException("User not found");
+            }  
+            var application = await _genericRepository.GetFirstWithInclude<Application>(x => x.OrderId == id && x.UserId == userId, x => x.User);
+
+            var applicationDto = _mapper.Map<ApplicationDto>(application);
+
+            return applicationDto;
+        }
+
+        public async Task<List<ApplicationDto>> GetApplicationsByOrderId(Guid id)
+        {
+            var application = await _genericRepository.GetByWhereWithInclude<Application>(x => x.OrderId == id, x => x.User);
+
+            var applicationDto = _mapper.Map<List<ApplicationDto>>(application);
+
+            return applicationDto;
+        }
 
         public async Task UpdateApplication(Guid id, ApplicationForUpdateDto applicationForUpdateDto)
         {
@@ -71,6 +93,7 @@ namespace Services.Bll.Services
 
             await _genericRepository.SaveChangesAsync();
         }
+
         private static void CheckExist(Application? application)
         {
             if (application == null)

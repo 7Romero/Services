@@ -13,6 +13,7 @@ namespace Services.API.Controllers
         {
             _skillService = skillService;
         }
+
         [HttpGet("{id}")]
         public async Task<SkillDto> GetSkill(Guid id)
         {
@@ -20,6 +21,7 @@ namespace Services.API.Controllers
 
             return skillDto;
         }
+
         [HttpPost, Authorize(Roles = "Administrator")]
         public async Task<IActionResult> CreateSkill(SkillForUpdateDto skillForUpdateDto)
         {

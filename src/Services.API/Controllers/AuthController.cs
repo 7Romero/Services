@@ -35,6 +35,7 @@ public class AuthController : AppBaseController
 
         var userGetMe = new UserGetMeDto()
         {
+            Id = user.Id,
             Username = user.UserName,
             Roles = userRoles,
         };

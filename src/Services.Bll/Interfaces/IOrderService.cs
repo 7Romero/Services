@@ -14,8 +14,6 @@ namespace Services.Bll.Interfaces
 
         Task<OrderDto> GetOrder(Guid id);
 
-        Task<OrderWithApplicationDto> GetOrderWithApplication(Guid id, Guid userId);
-
         Task<OrderDto> CreateOrder(OrderForUpdateDto orderForUpdateDto, Guid userId);
 
         Task UpdateOrder(Guid id, OrderForUpdateDto orderForUpdateDto);
@@ -25,5 +23,7 @@ namespace Services.Bll.Interfaces
         Task UpdateOrderYourself(Guid id, OrderForUpdateDto orderForUpdateDto, Guid UserId);
 
         Task DeleteOrderYourself(Guid id, Guid UserId);
+
+        Task AppointFreelancer(SelectFreelancerForOrderDto selectFreelancerForOrderDto, Guid userId);
     }
 }

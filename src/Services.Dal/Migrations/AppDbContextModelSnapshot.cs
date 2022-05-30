@@ -34,7 +34,7 @@ namespace Services.Dal.Migrations
 
                     b.HasIndex("SkillsId");
 
-                    b.ToTable("OrderSkill", (string)null);
+                    b.ToTable("OrderSkill");
                 });
 
             modelBuilder.Entity("Services.Domain.Application", b =>
@@ -65,7 +65,7 @@ namespace Services.Dal.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Applications", (string)null);
+                    b.ToTable("Applications");
                 });
 
             modelBuilder.Entity("Services.Domain.Auth.Role", b =>
@@ -305,7 +305,7 @@ namespace Services.Dal.Migrations
 
                     b.HasIndex("SectionId");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("Services.Domain.Order", b =>
@@ -326,6 +326,9 @@ namespace Services.Dal.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("FreelancerId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<decimal>("SuggestedPrice")
                         .HasColumnType("decimal(18,2)");
 
@@ -340,9 +343,11 @@ namespace Services.Dal.Migrations
 
                     b.HasIndex("CategoryId");
 
+                    b.HasIndex("FreelancerId");
+
                     b.HasIndex("UserId");
 
-                    b.ToTable("Orders", (string)null);
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("Services.Domain.Section", b =>
@@ -357,7 +362,7 @@ namespace Services.Dal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Sections", (string)null);
+                    b.ToTable("Sections");
                 });
 
             modelBuilder.Entity("Services.Domain.Skill", b =>
@@ -372,7 +377,7 @@ namespace Services.Dal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Skills", (string)null);
+                    b.ToTable("Skills");
                 });
 
             modelBuilder.Entity("OrderSkill", b =>
@@ -479,6 +484,10 @@ namespace Services.Dal.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Services.Domain.Auth.User", "Freelancer")
+                        .WithMany()
+                        .HasForeignKey("FreelancerId");
+
                     b.HasOne("Services.Domain.Auth.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
@@ -486,6 +495,8 @@ namespace Services.Dal.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
+
+                    b.Navigation("Freelancer");
 
                     b.Navigation("User");
                 });

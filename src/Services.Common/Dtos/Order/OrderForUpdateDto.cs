@@ -21,8 +21,6 @@ namespace Services.Common.Dtos.Order
         [Required]
         public decimal SuggestedPrice { get; set; }
 
-        public DateTime Created { get; set; }
-
         [Required]
         public Guid CategoryId { get; set; }
     }

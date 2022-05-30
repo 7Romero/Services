@@ -12,8 +12,8 @@ using Services.Dal;
 namespace Services.Dal.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220523121757_add column RegistrationDate for User")]
-    partial class addcolumnRegistrationDateforUser
+    [Migration("20220528105711_add FreenalcerId")]
+    partial class addFreenalcerId
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -37,6 +37,37 @@ namespace Services.Dal.Migrations
                     b.HasIndex("SkillsId");
 
                     b.ToTable("OrderSkill");
+                });
+
+            modelBuilder.Entity("Services.Domain.Application", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("SuggestedPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("SuggestedTime")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Applications");
                 });
 
             modelBuilder.Entity("Services.Domain.Auth.Role", b =>
@@ -297,6 +328,9 @@ namespace Services.Dal.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("FreelancerId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<decimal>("SuggestedPrice")
                         .HasColumnType("decimal(18,2)");
 
@@ -310,6 +344,8 @@ namespace Services.Dal.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("FreelancerId");
 
                     b.HasIndex("UserId");
 
@@ -359,6 +395,25 @@ namespace Services.Dal.Migrations
                         .HasForeignKey("SkillsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Services.Domain.Application", b =>
+                {
+                    b.HasOne("Services.Domain.Order", "Order")
+                        .WithMany("Applications")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Services.Domain.Auth.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Services.Domain.Auth.RoleClaim", b =>
@@ -431,6 +486,10 @@ namespace Services.Dal.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Services.Domain.Auth.User", "Freelancer")
+                        .WithMany()
+                        .HasForeignKey("FreelancerId");
+
                     b.HasOne("Services.Domain.Auth.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
@@ -439,12 +498,19 @@ namespace Services.Dal.Migrations
 
                     b.Navigation("Category");
 
+                    b.Navigation("Freelancer");
+
                     b.Navigation("User");
                 });
 
             modelBuilder.Entity("Services.Domain.Category", b =>
                 {
                     b.Navigation("Orders");
+                });
+
+            modelBuilder.Entity("Services.Domain.Order", b =>
+                {
+                    b.Navigation("Applications");
                 });
 
             modelBuilder.Entity("Services.Domain.Section", b =>

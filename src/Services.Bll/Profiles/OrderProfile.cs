@@ -15,7 +15,6 @@ namespace Services.Bll.Profiles
         {
             CreateMap<Order, OrderDto>();
             CreateMap<Order, OrderListDto>();
-            CreateMap<Order, OrderWithApplicationDto>();
             CreateMap<OrderForUpdateDto, Order>();
         }
     }

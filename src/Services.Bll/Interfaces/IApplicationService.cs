@@ -11,6 +11,10 @@ namespace Services.Bll.Interfaces
     {
         Task<ApplicationDto> GetApplication(Guid id);
 
+        Task<ApplicationDto> GetApplicationByOrderId(Guid id, Guid userId);
+
+        Task<List<ApplicationDto>> GetApplicationsByOrderId(Guid id);
+
         Task<ApplicationDto> CreateApplication(ApplicationForUpdateDto applicationForUpdateDto, Guid userId);
 
         Task UpdateApplication(Guid id, ApplicationForUpdateDto applicationForUpdateDto);
