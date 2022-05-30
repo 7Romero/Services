@@ -10,7 +10,11 @@ namespace Services.Common.Dtos.User;
 public class UserAuthDto
 {
     [Required]
+    [MinLength(5)]
+    [MaxLength(20)]
     public string Username { get; set; }
     [Required]
+    [MinLength(8)]
+    [MaxLength(20)]
     public string Password { get; set; }
 }
